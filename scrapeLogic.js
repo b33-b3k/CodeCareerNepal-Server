@@ -36,7 +36,7 @@ const scrapeLogic = async (res) => {
       });
     });
 
-    res.json(elements);
+    res.send(elements);
   } catch (error) {
     console.error("Error:", error);
     // Handle the error as needed
