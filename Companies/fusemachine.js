@@ -3,6 +3,7 @@ const { transformString } = require("../utils/transform");
 async function scrapeFuseMachine() {
   let url = "https://fusemachines.com/careers/";
   let jobSelector = ".row.py-3";
+
   const browser = await puppeteer.launch({
     args: [
       "--disable-setuid-sandbox",
