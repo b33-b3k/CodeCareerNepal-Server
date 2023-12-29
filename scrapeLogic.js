@@ -2,7 +2,10 @@ const puppeteer = require("puppeteer");
 require("dotenv").config();
 
 const scrapeLogic = async (res) => {
+  let url = "https://www.cotiviti.com.np/jobs";
+  let jobSelector = "h3 a";
   const browser = await puppeteer.launch({
+    headless: "new",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
@@ -14,35 +17,29 @@ const scrapeLogic = async (res) => {
         ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
   });
+  const page = await browser.newPage();
+
   try {
-    const page = await browser.newPage();
+    await page.goto(url, {
+      waitUntil: "domcontentloaded",
+    });
+    await page.waitForSelector(jobSelector);
+    const parsedUrl = new URL(url);
+    const domain = parsedUrl.hostname;
 
-    await page.goto("https://developer.chrome.com/");
-
-    // Set screen size
-    await page.setViewport({ width: 1080, height: 1024 });
-
-    // Type into search box
-    await page.type(".search-box__input", "automate beyond recorder");
-
-    // Wait and click on first result
-    const searchResultSelector = ".search-box__link";
-    await page.waitForSelector(searchResultSelector);
-    await page.click(searchResultSelector);
-
-    // Locate the full title with a unique string
-    const textSelector = await page.waitForSelector(
-      "text/Customize and automate"
-    );
-    const fullTitle = await textSelector.evaluate((el) => el.textContent);
-
-    // Print the full title
-    const logStatement = `The title of this blog post is ${fullTitle}`;
-    console.log(logStatement);
-    res.send(logStatement);
-  } catch (e) {
-    console.error(e);
-    res.send(`Something went wrong while running Puppeteer: ${e}`);
+    const elements = await page.$$eval(jobSelector, (elems) => {
+      return elems.map((element) => {
+        let uri = "https://www.cotiviti.com.np";
+        return {
+          jobName: element.textContent.trim(),
+          jobUrl: uri + element.getAttribute("href"),
+        };
+      });
+    });
+    res.send(elements);
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle the error as needed
   } finally {
     await browser.close();
   }
