@@ -1,17 +1,38 @@
 const express = require("express");
-const { scrapeLogic } = require("./scrapeLogic");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const app = express();
+const cors = require("cors");
+// Load environment variables
+dotenv.config();
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
+app.use(cors());
+// Importing Routes
+const scrapeRoute = require("./Routes/scrapeRoute");
 
-app.get("/scrape", (req, res) => {
-  scrapeLogic(res);
-});
+// Connection to Database
 
+const MONGODB_URI = `${process.env.MONGODB_URI}`;
+
+mongoose.set("strictQuery", false);
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+
+    console.log("Connected to MongoDB Atlas");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB Atlas:", err);
+  });
+
+// Routes
 app.get("/", (req, res) => {
-  res.send("Render Puppeteer server is up and running!");
+  res.send("Welcome to CodeCareerNepal");
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
+app.use("/scrape", scrapeRoute);
