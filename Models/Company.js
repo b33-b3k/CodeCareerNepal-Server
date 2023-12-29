@@ -9,9 +9,6 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  jobRequirements: {
-    type: Array,
-  },
 });
 
 const companySchema = new mongoose.Schema({

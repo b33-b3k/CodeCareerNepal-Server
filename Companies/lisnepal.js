@@ -1,9 +1,9 @@
-const puppeteer = require("puppeteer");
 require("dotenv").config();
-
-const scrapeLogic = async (res) => {
-  let url = "https://www.cotiviti.com.np/jobs";
-  let jobSelector = "h3 a";
+const puppeteer = require("puppeteer");
+const { transformString } = require("../utils/transform");
+async function scrapeLISNepal() {
+  let url = "https://lisnepal.com.np/career/";
+  let jobSelector = ".notice-lg";
   const browser = await puppeteer.launch({
     args: [
       "--disable-setuid-sandbox",
@@ -25,24 +25,32 @@ const scrapeLogic = async (res) => {
     await page.waitForSelector(jobSelector);
     const parsedUrl = new URL(url);
     const domain = parsedUrl.hostname;
-
     const elements = await page.$$eval(jobSelector, (elems) => {
       return elems.map((element) => {
-        let uri = "https://www.cotiviti.com.np";
+        let uri = "https://lisnepal.com.np/career/";
         return {
-          jobName: element.textContent.trim(),
-          jobUrl: uri + element.getAttribute("href"),
+          jobName: element.querySelector(".title-bold").textContent.trim(),
+          jobUrl: uri + element.querySelector("a").getAttribute("href"),
         };
       });
     });
-    console.log(elements);
-    res.send(elements);
+    let refined = elements.map((jobs) => {
+      return {
+        jobName: transformString(jobs.jobName),
+        jobUrl: jobs.jobUrl,
+      };
+    });
+    return {
+      companyName: "LIS Nepal",
+      totalJobs: [...refined],
+    };
   } catch (error) {
     console.error("Error:", error);
     // Handle the error as needed
   } finally {
     await browser.close();
   }
+}
+module.exports = {
+  scrapeLISNepal,
 };
-
-module.exports = { scrapeLogic };

@@ -9,6 +9,27 @@ const scrapingFunctions = [
     name: "FuseMachine",
     scrape: require("../Companies/fusemachine").scrapeFuseMachine,
   },
+  {
+    name: "LeapFrog",
+    scrape: require("../Companies/leapfrog").scrapeLeapFrog,
+  },
+  {
+    name: "LIS Nepal",
+    scrape: require("../Companies/lisnepal").scrapeLISNepal,
+  },
+  {
+    name: "SoftBenz",
+    scrape: require("../Companies/softbenz").scrapeSoftBenz,
+  },
+  {
+    name: "Versik",
+    scrape: require("../Companies/verisk").scrapeVerisk,
+  },
+  //Have to Work on F1Soft
+  // {
+  //   name: "F1Soft International",
+  //   scrape: require("../Companies/f1soft").scrapeF1Soft,
+  // },
 ];
 
 router.get("/", async (req, res) => {
@@ -16,6 +37,7 @@ router.get("/", async (req, res) => {
     await Promise.all(
       scrapingFunctions.map(async (company) => {
         let temp = await company.scrape();
+        console.log(temp);
         await storeIntoDatabase(temp);
       })
     );
