@@ -5,6 +5,7 @@ async function scrapeLISNepal() {
   let url = "https://lisnepal.com.np/career/";
   let jobSelector = ".notice-lg";
   const browser = await puppeteer.launch({
+    headless: "true",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",

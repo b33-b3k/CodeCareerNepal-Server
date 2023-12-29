@@ -4,6 +4,7 @@ async function scrapeF1Soft() {
   let url = "https://www.f1soft.com/career#vacanciesList";
   let jobSelector = ".card-body";
   const browser = await puppeteer.launch({
+    headless: "true",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
