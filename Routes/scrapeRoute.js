@@ -34,13 +34,11 @@ const scrapingFunctions = [
 
 router.get("/", async (req, res) => {
   try {
-    await Promise.all(
-      scrapingFunctions.map(async (company) => {
-        let temp = await company.scrape();
-        console.log(temp);
-        await storeIntoDatabase(temp);
-      })
-    );
+    for (const company of scrapingFunctions) {
+      let temp = await company.scrape();
+      console.log(temp);
+      await storeIntoDatabase(temp);
+    }
 
     console.log(`Scraping completed for all the IT Companies`);
     res.redirect("/");
