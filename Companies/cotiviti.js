@@ -4,7 +4,7 @@ async function scrapeCotiviti() {
   let url = "https://www.cotiviti.com.np/jobs";
   let jobSelector = "h3 a";
   const browser = await puppeteer.launch({
-    headless: "true",
+    headless: "new",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",

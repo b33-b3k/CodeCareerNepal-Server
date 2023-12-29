@@ -4,7 +4,7 @@ async function scrapeSoftBenz() {
   let url = "https://softbenz.com/careers";
   let jobSelector = ".mb-30";
   const browser = await puppeteer.launch({
-    headless: "true",
+    headless: "new",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",

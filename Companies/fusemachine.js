@@ -5,7 +5,7 @@ async function scrapeFuseMachine() {
   let jobSelector = ".row.py-3";
 
   const browser = await puppeteer.launch({
-    headless: "true",
+    headless: "new",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
