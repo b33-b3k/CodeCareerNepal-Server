@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { transformString } = require("../utils/transform");
+
 async function scrapeFuseMachine() {
   let url = "https://fusemachines.com/careers/";
   let jobSelector = ".row.py-3";
@@ -44,7 +44,7 @@ async function scrapeFuseMachine() {
     });
     let refined = totalNepalJobs.map((jobs) => {
       return {
-        jobName: transformString(jobs.jobName),
+        jobName: jobs.jobName,
         jobUrl: jobs.jobUrl,
       };
     });

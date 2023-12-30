@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { transformString } = require("../utils/transform");
+
 async function scrapeVerisk() {
   url = "https://careers.smartrecruiters.com/Verisk?search=nepal";
   jobSelector = ".openings-section li a";
@@ -34,7 +34,7 @@ async function scrapeVerisk() {
     });
     let refined = elements.map((jobs) => {
       return {
-        jobName: transformString(jobs.jobName),
+        jobName: jobs.jobName,
         jobUrl: jobs.jobUrl,
       };
     });

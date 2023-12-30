@@ -1,6 +1,6 @@
 require("dotenv").config();
 const puppeteer = require("puppeteer");
-const { transformString } = require("../utils/transform");
+
 async function scrapeLISNepal() {
   let url = "https://lisnepal.com.np/career/";
   let jobSelector = ".notice-lg";
@@ -36,7 +36,7 @@ async function scrapeLISNepal() {
     });
     let refined = elements.map((jobs) => {
       return {
-        jobName: transformString(jobs.jobName),
+        jobName: jobs.jobName,
         jobUrl: jobs.jobUrl,
       };
     });

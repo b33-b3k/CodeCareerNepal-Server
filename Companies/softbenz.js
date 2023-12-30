@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-const { transformString } = require("../utils/transform");
 async function scrapeSoftBenz() {
   let url = "https://softbenz.com/careers";
   let jobSelector = ".mb-30";
@@ -34,7 +33,7 @@ async function scrapeSoftBenz() {
     });
     let refined = elements.map((jobs) => {
       return {
-        jobName: transformString(jobs.jobName),
+        jobName: jobs.jobName,
         jobUrl: jobs.jobUrl,
       };
     });

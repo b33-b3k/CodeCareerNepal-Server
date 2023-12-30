@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-const { transformString } = require("../utils/transform");
 
 async function scrapeLeapFrog() {
   let url = "https://career.lftechnology.com/o";
@@ -40,7 +39,7 @@ async function scrapeLeapFrog() {
     });
     let refined = totalNepalJobs.map((jobs) => {
       return {
-        jobName: transformString(jobs.jobName),
+        jobName: jobs.jobName,
         jobUrl: jobs.jobUrl,
       };
     });

@@ -25,19 +25,26 @@ const scrapingFunctions = [
     name: "Versik",
     scrape: require("../Companies/verisk").scrapeVerisk,
   },
-  //Have to Work on F1Soft
-  // {
-  //   name: "F1Soft International",
-  //   scrape: require("../Companies/f1soft").scrapeF1Soft,
-  // },
 ];
 
 router.get("/", async (req, res) => {
   try {
-    for (const company of scrapingFunctions) {
-      let temp = await company.scrape();
-      console.log(temp);
-      await storeIntoDatabase(temp);
+    const maxConcurrency = 2; // Adjust this based on available resources
+
+    const executeScraping = async (company) => {
+      try {
+        const result = await company.scrape();
+        console.log(result);
+        await storeIntoDatabase(result);
+      } catch (error) {
+        console.error(`Error scraping ${company.name}:`, error);
+      }
+    };
+
+    for (let i = 0; i < scrapingFunctions.length; i += maxConcurrency) {
+      const batch = scrapingFunctions.slice(i, i + maxConcurrency);
+      const promises = batch.map((company) => executeScraping(company));
+      await Promise.all(promises);
     }
 
     console.log(`Scraping completed for all the IT Companies`);

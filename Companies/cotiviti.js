@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { transformString } = require("../utils/transform");
+
 async function scrapeCotiviti() {
   let url = "https://www.cotiviti.com.np/jobs";
   let jobSelector = "h3 a";
@@ -36,7 +36,7 @@ async function scrapeCotiviti() {
     });
     let refined = elements.map((jobs) => {
       return {
-        jobName: transformString(jobs.jobName),
+        jobName: jobs.jobName,
         jobUrl: jobs.jobUrl,
       };
     });

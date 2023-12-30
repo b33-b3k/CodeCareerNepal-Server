@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-const { transformString } = require("../utils/transform");
 async function scrapeF1Soft() {
   let url = "https://www.f1soft.com/career#vacanciesList";
   let jobSelector = ".card-body";
@@ -37,7 +36,7 @@ async function scrapeF1Soft() {
     });
     let refined = elements.map((jobs) => {
       return {
-        jobName: transformString(jobs.jobName),
+        jobName: jobs.jobName,
         jobUrl: jobs.jobUrl,
       };
     });
