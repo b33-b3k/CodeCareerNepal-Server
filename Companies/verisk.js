@@ -4,7 +4,6 @@ async function scrapeVerisk() {
   url = "https://careers.smartrecruiters.com/Verisk?search=nepal";
   jobSelector = ".openings-section li a";
   const browser = await puppeteer.launch({
-    headless: "new",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",

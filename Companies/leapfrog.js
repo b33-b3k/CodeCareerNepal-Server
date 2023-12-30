@@ -5,7 +5,6 @@ async function scrapeLeapFrog() {
   let url = "https://career.lftechnology.com/o";
   let jobSelector = ".list-container .job";
   const browser = await puppeteer.launch({
-    headless: "new",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
