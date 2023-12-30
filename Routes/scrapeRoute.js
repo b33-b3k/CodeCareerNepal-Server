@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { storeIntoDatabase } = require("../utils/store");
+const ScrapeState = require("../Models/scrapeState"); // Adjust the path accordingly
 
 // Import scraping functions for different companies
 const scrapingFunctions = [
@@ -29,26 +30,40 @@ const scrapingFunctions = [
 
 router.get("/", async (req, res) => {
   try {
-    const maxConcurrency = 2; // Adjust this based on available resources
+    // Retrieve the current index from the database
+    const state = await ScrapeState.findOne();
+    const currentScrapeIndex = state ? state.currentIndex : 0;
 
-    const executeScraping = async (company) => {
-      try {
-        const result = await company.scrape();
-        console.log(result);
-        await storeIntoDatabase(result);
-      } catch (error) {
-        console.error(`Error scraping ${company.name}:`, error);
+    if (currentScrapeIndex < scrapingFunctions.length) {
+      const company = scrapingFunctions[currentScrapeIndex];
+      let temp = await company.scrape();
+      console.log(temp);
+      await storeIntoDatabase(temp);
+
+      console.log(`Scraping completed for ${company.name}`);
+
+      if (scrapingFunctions.length !== currentScrapeIndex + 1) {
+        // Update the index in the database
+        await ScrapeState.updateOne(
+          {},
+          { currentIndex: currentScrapeIndex + 1 },
+          { upsert: true }
+        );
+      } else {
+        await ScrapeState.deleteOne();
+        console.log("Scrape State Reset");
       }
-    };
 
-    for (let i = 0; i < scrapingFunctions.length; i += maxConcurrency) {
-      const batch = scrapingFunctions.slice(i, i + maxConcurrency);
-      const promises = batch.map((company) => executeScraping(company));
-      await Promise.all(promises);
+      // Redirect to the same endpoint to trigger the next scraping request
+      res.redirect("/");
+    } else {
+      console.log(`Scraping completed for all the IT Companies`);
+
+      // Reset the index to 0 after scraping all companies
+      await ScrapeState.updateOne({}, { currentIndex: 0 }, { upsert: true });
+
+      res.redirect("/");
     }
-
-    console.log(`Scraping completed for all the IT Companies`);
-    res.redirect("/");
   } catch (error) {
     console.error("Error:", error);
     res

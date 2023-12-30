@@ -21,8 +21,7 @@ async function scrapeSoftBenz() {
       waitUntil: "domcontentloaded",
     });
     await page.waitForSelector(jobSelector);
-    const parsedUrl = new URL(url);
-    const domain = parsedUrl.hostname;
+
     const elements = await page.$$eval(jobSelector, (elems) => {
       return elems.map((element) => {
         return {
