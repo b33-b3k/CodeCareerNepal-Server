@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { storeIntoDatabase } = require("../utils/store");
 const ScrapeState = require("../Models/scrapeState");
-const { getInternJobs } = require("../utils/getInternJobs");
 
 // Import scraping functions for different companies
 const scrapingFunctions = [
@@ -92,16 +91,5 @@ router.get("/", async (req, res) => {
       .json({ error: "An error occurred while scraping companies." });
   }
 });
-router.get("/intern", async (req, res) => {
-  try {
-    const internJobs = await getInternJobs();
-    console.log(internJobs);
-    res.status(200).json(internJobs);
-  } catch (error) {
-    console.error("Route Error:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching intern jobs." });
-  }
-});
+
 module.exports = router;
