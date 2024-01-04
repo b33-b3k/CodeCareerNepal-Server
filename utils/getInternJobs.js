@@ -15,14 +15,14 @@ const getInternJobs = async () => {
         $group: {
           _id: "$_id", // Group by company
           companyName: { $first: "$companyName" }, // Keep the company name
-          internJobs: { $push: "$totalJobs" }, // Create an array of relevant jobs
+          totalJobs: { $push: "$totalJobs" }, // Create an array of relevant jobs
         },
       },
       {
         $project: {
           _id: 0, // Exclude the default MongoDB _id field
           companyName: 1, // Include the company name
-          internJobs: 1, // Include the array of relevant jobs
+          totalJobs: 1, // Include the array of relevant jobs
         },
       },
     ]);

@@ -39,6 +39,14 @@ const scrapingFunctions = [
     name: "Info Developers",
     scrape: require("../Companies/infodev").scrapeInfoDev,
   },
+  {
+    name: "Ekbana",
+    scrape: require("../Companies/ekbana").scrapeEkbana,
+  },
+  {
+    name: "UBA Solutions",
+    scrape: require("../Companies/ubaSolutions").scrapeUBASolutions,
+  },
 ];
 
 router.get("/", async (req, res) => {
