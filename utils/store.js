@@ -5,16 +5,24 @@ async function storeIntoDatabase(refinedTotalJobs) {
       companyName: refinedTotalJobs.companyName,
     });
 
+    const currentDate = new Date();
+
     if (Array.isArray(temp) && temp.length === 0) {
       // Store it in the database
-      const company = new Company(refinedTotalJobs);
+      const company = new Company({
+        ...refinedTotalJobs,
+        updatedAt: currentDate,
+      });
       await company.save();
       console.log(
         `Job data for ${refinedTotalJobs.companyName} has been saved to the database.`
       );
     } else {
       const companyQuery = { companyName: refinedTotalJobs.companyName };
-      const updateData = { $set: refinedTotalJobs };
+      const updateData = {
+        ...refinedTotalJobs,
+        updatedAt: currentDate,
+      };
       const updatedCompany = await Company.findOneAndUpdate(
         companyQuery,
         updateData,
@@ -31,6 +39,7 @@ async function storeIntoDatabase(refinedTotalJobs) {
     console.error(`Error while storing job data: ${error.message}`);
   }
 }
+
 module.exports = {
   storeIntoDatabase,
 };

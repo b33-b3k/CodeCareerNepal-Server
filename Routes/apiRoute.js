@@ -4,16 +4,42 @@ const router = express.Router();
 const Company = require("../Models/Company");
 const { getInternJobs } = require("../utils/getInternJobs");
 
+// Number of items to load per page
+const ITEMS_PER_PAGE = 10;
+
+// Get all company job listings
 router.get("/", async (req, res) => {
   try {
-    const allCompanyJobListing = await Company.find({});
-    const allInternsOpening = await getInternJobs();
-    res.status(200).json(allInternsOpening);
+    let { page } = req.query;
+    page = parseInt(page) || 1;
+
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+
+    const allCompanyJobListing = await Company.find({})
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE);
+
+    res.status(200).json(allCompanyJobListing);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
+// Get intern jobs
+router.get("/intern", async (req, res) => {
+  try {
+    const internJobs = await getInternJobs();
+    console.log(internJobs);
+    res.status(200).json(internJobs);
+  } catch (error) {
+    console.error("Route Error:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching intern jobs." });
+  }
+});
+
+// Get job listings for a specific company
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -28,38 +54,5 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-router.get("/:id/intern", async (req, res) => {
-  const id = req.params.id;
 
-  if (!id) {
-    return res.status(404).json({ error: "Company not found" });
-  }
-
-  try {
-    const jobListing = await Company.find({ companyName: id });
-    const internshipRegex = /^(intern|trainee)/i;
-
-    const filteredJobs = jobListing[0].totalJobs.filter((job) => {
-      const jobNameLower = job.jobName.toLowerCase();
-      const match =
-        jobNameLower.startsWith("intern") || jobNameLower.startsWith("trainee");
-
-      // Log the job names and whether they match the filter
-      console.log(`Job: ${job.jobName}, Matches Filter: ${match}`);
-
-      return match;
-    });
-
-    // Update the jobListing object with the filtered jobs
-    jobListing[0].totalJobs = filteredJobs;
-
-    // Convert the Mongoose document to a plain JavaScript object
-    const response = jobListing[0].toObject();
-
-    // Send the response to the client
-    res.status(200).json(response);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 module.exports = router;

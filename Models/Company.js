@@ -9,6 +9,10 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const companySchema = new mongoose.Schema({
@@ -21,6 +25,10 @@ const companySchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
     type: Date,
     default: Date.now,
   },
