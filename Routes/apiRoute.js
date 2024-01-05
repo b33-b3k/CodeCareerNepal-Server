@@ -3,14 +3,29 @@ const express = require("express");
 const router = express.Router();
 const Company = require("../Models/Company");
 const { getInternJobs } = require("../utils/getInternJobs");
+
+// Number of items to load per page
+const ITEMS_PER_PAGE = 10;
+
+// Get all company job listings
 router.get("/", async (req, res) => {
   try {
-    const allCompanyJobListing = await Company.find({});
+    let { page } = req.query;
+    page = parseInt(page) || 1;
+
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+
+    const allCompanyJobListing = await Company.find({})
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE);
+
     res.status(200).json(allCompanyJobListing);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// Get intern jobs
 router.get("/intern", async (req, res) => {
   try {
     const internJobs = await getInternJobs();
@@ -23,6 +38,8 @@ router.get("/intern", async (req, res) => {
       .json({ error: "An error occurred while fetching intern jobs." });
   }
 });
+
+// Get job listings for a specific company
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
 

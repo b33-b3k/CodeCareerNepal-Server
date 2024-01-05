@@ -42,10 +42,10 @@ const scrapingFunctions = [
     name: "Ekbana",
     scrape: require("../Companies/ekbana").scrapeEkbana,
   },
-  {
-    name: "UBA Solutions",
-    scrape: require("../Companies/ubaSolutions").scrapeUBASolutions,
-  },
+  // {
+  //   name: "UBA Solutions",
+  //   scrape: require("../Companies/ubaSolutions").scrapeUBASolutions,
+  // },
 ];
 
 router.get("/", async (req, res) => {
@@ -66,7 +66,7 @@ router.get("/", async (req, res) => {
         // Update the index in the database
         await ScrapeState.updateOne(
           {},
-          { currentIndex: currentScrapeIndex + 1 },
+          { currentIndex: currentScrapeIndex + 1, updatedAt: new Date() }, // Update updatedAt field
           { upsert: true }
         );
       } else {
