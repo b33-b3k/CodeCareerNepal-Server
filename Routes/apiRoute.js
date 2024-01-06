@@ -5,7 +5,7 @@ const Company = require("../Models/Company");
 const { getInternJobs } = require("../utils/getInternJobs");
 
 // Number of items to load per page
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 
 // Get all company job listings
 router.get("/", async (req, res) => {
